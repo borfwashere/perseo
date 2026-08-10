@@ -1,7 +1,7 @@
 {
   "name": "medusa",
   "version": "1.0.0",
-  "description": "Herramientas de manipulación visual: cortar, reordenar y multiplicar imágenes.",
+  "description": "Visual manipulation tools: cut, rearrange and multiply images.",
   "private": true,
   "scripts": {
     "start": "npx serve ."

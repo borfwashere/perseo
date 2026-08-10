@@ -1,60 +1,60 @@
 # PLAN — MindCut
 
-Plan de implementación de la herramienta de duplicación de imágenes por slicing.
+Implementation plan for the image duplication tool by slicing.
 
-## Objetivo
+## Objective
 
-Replicar el proceso "Top Breeder" de Kensuke Koike en el navegador, con una interfaz similar a autocutter y estética B&W minimalista.
+Replicate Kensuke Koike's "Top Breeder" process in the browser, with an interface similar to autocutter and a minimalist B&W aesthetic.
 
-## Pasos
+## Steps
 
-### 1. Estructura del proyecto
-- [x] Crear carpeta `mindcut/`
-- [x] Crear `INFO.md` (documentación técnica)
-- [x] Crear `PLAN.md` (este archivo)
+### 1. Project structure
+- [x] Create `mindcut/` folder
+- [x] Create `INFO.md` (technical documentation)
+- [x] Create `PLAN.md` (this file)
 
-### 2. Interfaz (`index.html`)
-- [ ] Hero: título "mindcut", subtítulo, meta (técnica, filosofía)
-- [ ] Toolbar: upload, cut, slices, mode, direction, effect, gap, save
-- [ ] Workspace: panel source + panel result
-- [ ] Footer con créditos
+### 2. Interface (`index.html`)
+- [x] Hero: title "mindcut", subtitle, meta (technique, philosophy)
+- [x] Toolbar: upload, cut, slices, mode, direction, effect, gap, save
+- [x] Workspace: source panel + result panel
+- [x] Footer with credits
 
-### 3. Estilos (`style.css`)
-- [ ] Fondo blanco, texto negro, grises secundarios
-- [ ] Tipografías Playfair Display + Inter
-- [ ] Toolbar fija estilo autocutter
-- [ ] Responsive (1024px, 600px)
+### 3. Styles (`style.css`)
+- [x] White background, black text, secondary grays
+- [x] Playfair Display + Inter typography
+- [x] Fixed toolbar in autocutter style
+- [x] Responsive (1024px, 600px)
 
-### 4. Lógica (`app.js`)
-- [ ] Upload + drag & drop
-- [ ] Render de imagen fuente en canvas
-- [ ] Algoritmo `drawStrips` (corte + separación + estirado)
-- [ ] Modo Top Breeder (1 → 2 → 4 copias)
-- [ ] Modo Manual (barajado + gap)
-- [ ] Efectos: none, b&w, threshold, invert
-- [ ] Save PNG
+### 4. Logic (`app.js`)
+- [x] Upload + drag & drop
+- [x] Source image render on canvas
+- [x] `drawStrips` algorithm (cut + separation + stretch)
+- [x] Top Breeder mode (1 → 2 → 4 copies)
+- [x] Manual mode (shuffle + gap)
+- [x] Effects: none, b&w, threshold, invert
+- [x] Save PNG
 
-### 5. Verificación
-- [ ] Probar con imagen local
-- [ ] Probar ambos modos y efectos
-- [ ] Verificar descarga PNG
+### 5. Verification
+- [x] Test with local image
+- [x] Test both modes and effects
+- [x] Verify PNG download
 
-## Dependencias
+## Dependencies
 
-- Paso 4 depende de 2 y 3 (estructura y estilos listos).
-- El algoritmo de slicing es independiente de la UI.
+- Step 4 depends on 2 and 3 (structure and styles ready).
+- The slicing algorithm is independent of the UI.
 
-## Estimación
+## Estimation
 
-| Fase | Esfuerzo |
+| Phase | Effort |
 |---|---|
-| Estructura + docs | Bajo |
-| Interfaz + estilos | Medio |
-| Lógica Canvas | Alto |
-| Verificación | Bajo |
+| Structure + docs | Low |
+| Interface + styles | Medium |
+| Canvas logic | High |
+| Verification | Low |
 
-## Riesgos
+## Risks
 
-- `ctx.filter` no soportado en navegadores muy antiguos → fallback con pixel manipulation.
-- Imágenes muy grandes → el canvas 2x puede consumir memoria; se limita el tamaño máximo de render.
-- El estirado de tiras produce distorsión horizontal/vertical (efecto buscado, no es bug).
+- `ctx.filter` not supported in very old browsers → fallback with pixel manipulation.
+- Very large images → the 2x canvas can consume memory; the maximum render size is limited.
+- Strip stretching produces horizontal/vertical distortion (intended effect, not a bug).

@@ -250,61 +250,11 @@
             this.classList.remove('dragover');
         }
     });
-    els.sourceWrap.addEventListener('drop', function (e) {
+els.sourceWrap.addEventListener('drop', function (e) {
         e.preventDefault();
         dragDepth = 0;
         this.classList.remove('dragover');
         var files = e.dataTransfer.files;
         if (files && files.length) loadImage(files[0]);
     });
-    function exportHTML() {
-        var html = '<!DOCTYPE html>\n<html lang="es">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>mindcut \u2013 Cortar. Reordenar. Multiplicar.</title>\n    <link rel="preconnect" href="https://fonts.googleapis.com">\n    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">\n    <link rel="stylesheet" href="style.css">\n</head>\n<body>\n';
-
-        html += '    <header class="top-bar">\n        <a href="../" class="logo">MEDUSA</a>\n        <nav class="nav-links">\n            <a href="#app" class="active">mind</a>\n            <a href="../cut/index.html">cut</a>\n            <a href="../scanner/index.html">scanner</a>\n        </nav>\n    </header>\n\n';
-
-        var heroTitle = document.querySelector('.hero-title').innerHTML;
-        var heroEyebrow = document.querySelector('.hero-eyebrow').innerHTML;
-        var heroSubtitle = document.querySelector('.hero-subtitle').innerHTML;
-
-        html += '    <section class="hero">\n        <div class="hero-content">\n            <div class="hero-eyebrow">' + heroEyebrow + '</div>\n            <h1 class="hero-title">' + heroTitle + '</h1>\n            <p class="hero-subtitle">\n                ' + heroSubtitle + '\n            </p>\n        </div>\n    </section>\n\n';
-
-        html += '    <section class="app" id="app">\n        <header class="toolbar">\n            <div class="control-group">\n                <span class="group-label">file</span>\n                <label class="btn" for="upload">upload</label>\n                <input type="file" id="upload" accept="image/*" hidden>\n            </div>\n\n';
-
-        html += '            <div class="control-group">\n                <span class="group-label">cut</span>\n                <button id="cut" class="btn primary" disabled title="aplicar corte">cut</button>\n                <label class="stepper" title="n\u00famero de tiras">\n                    slices\n                    <button type="button" id="slices-down" class="step" aria-label="decrease">-</button>\n                    <input type="number" id="slices-input" min="2" max="50" value="10">\n                    <button type="button" id="slices-up" class="step" aria-label="increase">+</button>\n                </label>\n            </div>\n\n';
-
-        html += '            <div class="control-group">\n                <span class="group-label">copies</span>\n                <button id="copies-2" class="btn active" title="2 copias">2</button>\n                <button id="copies-4" class="btn" title="4 copias">4</button>\n            </div>\n\n';
-
-        html += '            <div class="control-group">\n                <span class="group-label">effect</span>\n                <label class="select-control" title="filtro aplicado al resultado">\n                    <select id="effect">\n                        <option value="none">effect: none</option>\n                        <option value="bw">effect: b&amp;w</option>\n                        <option value="threshold">effect: threshold</option>\n                        <option value="dither">effect: dither</option>\n                        <option value="invert">effect: invert</option>\n                    </select>\n                </label>\n            </div>\n\n';
-
-        html += '            <div class="control-group">\n                <span class="group-label">save</span>\n                <button id="save" class="btn" disabled title="descargar resultado">save</button>\n            </div>\n        </header>\n\n';
-
-        html += '        <main class="workspace">\n            <section class="panel">\n                <div class="panel-label">source</div>\n                <div id="source-wrap" class="canvas-wrap empty">drop or upload an image</div>\n            </section>\n            <section class="panel">\n                <div class="panel-label">result</div>\n                <div id="result-wrap" class="canvas-wrap empty">press cut</div>\n                <div id="downloads" class="downloads"></div>\n            </section>\n        </main>\n    </section>\n\n';
-
-        var aboutQuote = document.querySelector('.about-quote').innerHTML;
-        var aboutTitle = document.querySelector('.section-title').innerHTML;
-        var aboutTexts = [];
-        document.querySelectorAll('.section-text').forEach(function(p) {
-            aboutTexts.push(p.innerHTML);
-        });
-
-        html += '    <section class="about" id="about">\n        <div class="container">\n            <div class="about-grid">\n                <div class="about-quote">\n                    ' + aboutQuote + '\n                </div>\n                <div class="about-content">\n                    <h2 class="section-title">' + aboutTitle + '</h2>\n';
-
-        aboutTexts.forEach(function(text) {
-            html += '                    <p class="section-text">\n                        ' + text + '\n                    </p>\n';
-        });
-
-        html += '                </div>\n            </div>\n        </div>\n    </section>\n\n';
-
-        html += '    <script src="app.js"></script>\n    <div class="page-footer">\u00a9 2026 MEDUSA</div>\n</body>\n</html>';
-
-        var blob = new Blob([html], { type: 'text/html' });
-        var link = document.createElement('a');
-        link.download = 'mindcut.html';
-        link.href = URL.createObjectURL(blob);
-        link.click();
-        URL.revokeObjectURL(link.href);
-    }
-
-    els.exportHtml = $('export-html');
-    els.exportHtml.addEventListener('click', exportHTML);
 })();

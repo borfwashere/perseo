@@ -1,38 +1,38 @@
 # MEDUSA
 
-Herramientas de manipulación visual. Tres aplicaciones web para cortar, reordenar y multiplicar imágenes, cada una explorando una forma distinta de deconstruir lo visual.
+Visual manipulation tools. Three web apps to cut, rearrange and multiply images, each exploring a different way of deconstructing the visual.
 
-## Herramientas
+## Tools
 
-| Herramienta | Descripción |
+| Tool | Description |
 |---|---|
-| [mind](mindcut/) | Corta una imagen en tiras, separa pares e impares y estira cada grupo para crear copias múltiples (proceso "Top Breeder" de Kensuke Koike). |
-| [cut](cut/) | Fragmenta una imagen en celdas irregulares y las recompone en una composición nueva, reproducible por semilla. |
-| [scanner](scanner/) | Simula un escáner: una línea recorre la imagen y revela el resultado tira a tira, con capas, efectos y grabación de video. |
+| [mind](mindcut/) | Slices an image into strips, separates odd and even, then stretches each group to create multiple copies (Kensuke Koike's "Top Breeder" process). |
+| [cut](cut/) | Shatters an image into irregular cells and recomposes them into a new composition, reproducible by seed. |
+| [scanner](scanner/) | Simulates a scanner: a line sweeps across the image, revealing the result strip by strip, with layers, effects and video recording. |
 
-## Estructura
+## Structure
 
 ```
 MEDUSA/
 ├── index.html        Landing page
-├── mindcut/          Herramienta "mind" (Top Breeder)
-├── cut/              Herramienta "cut" (fragmentación por semilla)
-└── scanner/          Herramienta "scanner" (simulador de escáner)
+├── mindcut/          "mind" tool (Top Breeder)
+├── cut/              "cut" tool (seed-based fragmentation)
+└── scanner/          "scanner" tool (scanner simulator)
 ```
 
-Cada herramienta es autónoma: `index.html` + `style.css` + `app.js` (o `scanner.js`), con su propia documentación (`INFO.md` / `PLAN.md`).
+Each tool is self-contained: `index.html` + `style.css` + `app.js` (or `scanner.js`), with its own documentation (`INFO.md` / `PLAN.md`).
 
-## Uso
+## Usage
 
-Abrir `index.html` en un navegador. No requiere servidor ni build step: todo el procesamiento ocurre en el cliente sobre Canvas 2D.
+Open `index.html` in a browser. No server or build step required: all processing happens client-side on Canvas 2D.
 
 ## Stack
 
-- HTML5 + CSS3 + JavaScript puro (vanilla)
+- HTML5 + CSS3 + vanilla JavaScript
 - Canvas 2D API
-- Sin dependencias externas
-- Tipografías: Playfair Display + Inter
+- No external dependencies
+- Fonts: Playfair Display + Inter
 
-## Licencia
+## License
 
 © 2026 MEDUSA

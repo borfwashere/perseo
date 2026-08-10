@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#EDEAE6">
+  <meta name="theme-color" content="#ffffff">
   <title>Scanner Simulator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,6 +41,27 @@
       margin-right: 8px;
       white-space: nowrap;
     }
+    .brand a { color: #111111; text-decoration: none; }
+    .brand a:hover { color: #555555; }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+      align-items: center;
+      margin-right: 8px;
+    }
+    .nav-links a {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #666666;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover { color: #000000; }
+    .nav-links a.active { color: #000000; }
 
     .btn {
       font-family: 'Inter', sans-serif;
@@ -246,7 +267,12 @@
 </head>
 <body>
   <div class="toolbar">
-    <span class="brand">SCANNER</span>
+    <span class="brand"><a href="../">MEDUSA</a></span>
+    <nav class="nav-links">
+      <a href="../mindcut/index.html">mind</a>
+      <a href="../cut/index.html">cut</a>
+      <a href="#" class="active">scanner</a>
+    </nav>
     <button class="btn" id="btnLoad">Load Image</button>
     <button class="btn btn-primary" id="btnScan">Start Scan</button>
     <button class="btn" id="btnStop">Stop</button>

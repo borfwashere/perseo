@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEDUSA — Herramientas de manipulación visual</title>
+    <title>MEDUSA — Visual Manipulation Tools</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -13,13 +13,6 @@
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: #ffffff; color: #111111; line-height: 1.7; overflow-x: hidden; }
         a { color: #000000; text-decoration: none; transition: color 0.3s ease; }
         a:hover { color: #555555; }
-
-        .top-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 100%); }
-        .logo { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: #000000; letter-spacing: 0.05em; }
-        .nav-links { display: flex; gap: 2rem; list-style: none; }
-        .nav-links a { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #666666; transition: color 0.3s ease; }
-        .nav-links a:hover { color: #000000; }
-        .nav-links a.active { color: #000000; }
 
         .hero { position: relative; z-index: 1001; display: flex; align-items: center; justify-content: center; padding: 8rem 2rem 4rem; min-height: 50vh; }
         .hero-content { max-width: 1200px; width: 100%; text-align: center; }
@@ -32,35 +25,22 @@
         .tool-card { border: 1px solid rgba(0,0,0,0.12); padding: 2.5rem 2rem; transition: all 0.3s ease; }
         .tool-card:hover { border-color: #000000; }
         .tool-card .tool-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: #000000; margin-bottom: 0.75rem; }
-        .tool-card .tool-desc { font-size: 0.9rem; font-weight: 300; color: #666666; line-height: 1.6; margin-bottom: 1.5rem; }
-        .tool-card .tool-link { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #000000; }
-        .tool-card .tool-link::after { content: ' →'; }
+        .tool-card .tool-desc { font-size: 0.9rem; font-weight: 300; color: #666666; line-height: 1.6; }
 
         .page-footer { text-align: left; padding: 2rem; font-size: 0.75rem; color: #999999; border-top: 1px solid rgba(0,0,0,0.08); }
 
         @media (max-width: 768px) {
             .tools-grid { grid-template-columns: 1fr; }
-            .nav-links { display: none; }
         }
     </style>
 </head>
 <body>
-    <header class="top-bar">
-        <div class="logo">MEDUSA</div>
-        <nav class="nav-links">
-            <a href="mindcut/index.html">mind</a>
-            <a href="cut/index.html">cut</a>
-            <a href="scanner/index.html">scanner</a>
-        </nav>
-    </header>
-
     <section class="hero">
         <div class="hero-content">
-            <div class="hero-eyebrow">Herramientas de manipulación visual</div>
+            <div class="hero-eyebrow">Visual Manipulation Tools</div>
             <h1 class="hero-title">MEDUSA</h1>
             <p class="hero-subtitle">
-                Tres herramientas para cortar, reordenar y multiplicar imágenes.
-                Cada una explora una forma diferente de deconstruir lo visual.
+                Nada nuevo, nada eliminado.
             </p>
         </div>
     </section>
@@ -69,18 +49,15 @@
         <div class="tools-grid">
             <a href="mindcut/index.html#app" class="tool-card">
                 <div class="tool-name">mind</div>
-                <div class="tool-desc">Corta una imagen en tiras, sepáralas por pares e impares y estira cada grupo para crear copias múltiples.</div>
-                <div class="tool-link">Abrir mindcut</div>
+                <div class="tool-desc">Slices an image into strips, separates odd and even, then stretches each group to create multiple copies.</div>
             </a>
             <a href="cut/index.html" class="tool-card">
                 <div class="tool-name">cut</div>
-                <div class="tool-desc">Fragmenta una imagen en celdas y las recompone en una composición nueva, reproducible por semilla.</div>
-                <div class="tool-link">Abrir cut</div>
+                <div class="tool-desc">Shatters an image into cells and recomposes them into a new composition, reproducible by seed.</div>
             </a>
             <a href="scanner/index.html" class="tool-card">
                 <div class="tool-name">scanner</div>
-                <div class="tool-desc">Simula un escáner: una línea recorre la imagen y revela el resultado tira a tira, con capas y efectos.</div>
-                <div class="tool-link">Abrir scanner</div>
+                <div class="tool-desc">Simulates a scanner: a line sweeps across the image, revealing the result strip by strip, with layers and effects.</div>
             </a>
         </div>
     </section>

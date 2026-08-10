@@ -1,69 +1,69 @@
 # Scanner
 
-Herramienta web que simula un escáner: una línea recorre la imagen fuente y revela el resultado tira a tira en un panel contiguo.
+Web tool that simulates a scanner: a line sweeps across the source image, revealing the result strip by strip in an adjacent panel.
 
-## Concepto
+## Concept
 
-Scanner digitaliza el gesto físico de escanear: la imagen se posiciona en el panel fuente (arrastrar mueve, click derecho rota, rueda hace zoom) y al iniciar el escaneo una línea vertical barre el panel copiando tiras de píxeles al panel resultado. El resultado se acumula en capas con modos de fusión, efectos y grabación de video.
+Scanner digitizes the physical gesture of scanning: the image is positioned in the source panel (drag to move, right-click to rotate, wheel to zoom) and when scanning starts a vertical line sweeps the panel, copying strips of pixels to the result panel. The result accumulates in layers with blend modes, effects and video recording.
 
 ## Stack
 
-- HTML5 + CSS3 + JavaScript puro (vanilla)
-- Canvas 2D API + `MediaRecorder` para video
-- Sin dependencias externas ni build step
-- Fuentes: Playfair Display (títulos) + Inter (texto)
+- HTML5 + CSS3 + vanilla JavaScript
+- Canvas 2D API + `MediaRecorder` for video
+- No external dependencies or build step
+- Fonts: Playfair Display (titles) + Inter (text)
 
-## Estructura
+## Structure
 
 ```
 scanner/
-├── index.html   Estructura: toolbar + paneles source/result + modal de efectos
-├── scanner.js   Lógica: clase ScannerApp (layout, scan, capas, efectos, export)
-└── INFO.md      Este documento
+├── index.html   Structure: toolbar + source/result panels + effects modal
+├── scanner.js   Logic: ScannerApp class (layout, scan, layers, effects, export)
+└── INFO.md      This document
 ```
 
 ## Pipeline
 
 ### 1. Layout
-`computeLayout()` calcula el tamaño de los dos paneles según el viewport y el formato elegido (free, 16:9, 4:5, 1:1, A4). Ambos canvas comparten dimensiones.
+`computeLayout()` calculates the size of both panels based on the viewport and the chosen format (free, 16:9, 4:5, 1:1, A4). Both canvases share dimensions.
 
-### 2. Posicionamiento
-La imagen se ajusta al panel (`fitImage`) y puede moverse, rotarse y escalarse con mouse o touch (drag, right-click rotate, wheel zoom, pinch).
+### 2. Positioning
+The image is fitted to the panel (`fitImage`) and can be moved, rotated and scaled with mouse or touch (drag, right-click rotate, wheel zoom, pinch).
 
-### 3. Escaneo
-En cada frame mientras `scanning`, la posición avanza según la velocidad (`slow` 25, `normal` 50, `fast` 75 px/seg). La tira barrida se copia del canvas fuente al layer activo:
+### 3. Scanning
+On each frame while `scanning`, the position advances according to the speed (`slow` 25, `normal` 50, `fast` 75 px/sec). The swept strip is copied from the source canvas to the active layer:
 
 ```
 scanPos = min(panelW, scanPos + speed * dt)
 act.drawImage(srcCanvas, prev, 0, cur - prev, panelH, prev, 0, cur - prev, panelH)
 ```
 
-### 4. Capas
-Cada escaneo completo se commitea como una capa con su modo de fusión (normal, multiply, screen). El resultado compone todas las capas en orden.
+### 4. Layers
+Each completed scan is committed as a layer with its blend mode (normal, multiply, screen). The result composites all layers in order.
 
-### 5. Efectos
-Se aplican sobre el canvas de resultado: b&w, threshold, invert, posterize, noise y dither (Floyd–Steinberg). El modal de efectos muestra un preview en vivo.
+### 5. Effects
+Applied to the result canvas: b&w, threshold, invert, posterize, noise and dither (Floyd–Steinberg). The effects modal shows a live preview.
 
-## Controles
+## Controls
 
-| Control | Descripción |
+| Control | Description |
 |---|---|
-| `Load Image` | Cargar imagen local (o drag & drop) |
-| `Start Scan` | Iniciar el barrido |
-| `Stop` | Detener el escaneo |
-| `Undo` | Deshacer la última capa |
-| `Effects` | Abrir modal de efectos |
-| `Ghost` | Mostrar la fuente fantasma en el resultado |
-| `Blend` | Modo de fusión de la capa activa |
-| `Format` | Aspect ratio de los paneles |
-| `Speed` | Velocidad de escaneo |
-| `REC` | Armar grabación de video (inicia con el scan) |
-| `Save PNG` | Exportar resultado |
-| `Save WebM` | Exportar grabación |
+| `Load Image` | Load a local image (or drag & drop) |
+| `Start Scan` | Start the sweep |
+| `Stop` | Stop the scan |
+| `Undo` | Undo the last layer |
+| `Effects` | Open the effects modal |
+| `Ghost` | Show the ghost source in the result |
+| `Blend` | Blend mode of the active layer |
+| `Format` | Aspect ratio of the panels |
+| `Speed` | Scan speed |
+| `REC` | Arm video recording (starts with the scan) |
+| `Save PNG` | Export result |
+| `Save WebM` | Export recording |
 
-## Notas técnicas
+## Technical notes
 
-- El undo mantiene un stack de hasta 20 snapshots de capas.
-- La grabación usa `canvas.captureStream(30)` + `MediaRecorder` con codec VP9 si está disponible.
-- Los efectos se aplican por píxel sobre `ImageData`; el dither usa el algoritmo de Floyd–Steinberg.
-- Todo el procesamiento ocurre en el cliente; no se sube nada a ningún servidor.
+- Undo keeps a stack of up to 20 layer snapshots.
+- Recording uses `canvas.captureStream(30)` + `MediaRecorder` with VP9 codec when available.
+- Effects are applied per pixel on `ImageData`; dither uses the Floyd–Steinberg algorithm.
+- All processing happens client-side; nothing is uploaded to any server.

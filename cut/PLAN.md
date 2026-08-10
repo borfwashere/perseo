@@ -1,65 +1,65 @@
 # PLAN — Cut
 
-Plan de implementación de la herramienta de fragmentación y recomposición de imágenes.
+Implementation plan for the image fragmentation and recomposition tool.
 
-## Objetivo
+## Objective
 
-Deconstruir una imagen en celdas irregulares y recomponerlas en una composición nueva, reproducible por semilla, con estética B&W minimalista.
+Deconstruct an image into irregular cells and recompose them into a new composition, reproducible by seed, with a minimalist B&W aesthetic.
 
-## Pasos
+## Steps
 
-### 1. Estructura del proyecto
-- [x] Crear carpeta `cut/`
-- [x] Crear `INFO.md` (documentación técnica)
-- [x] Crear `PLAN.md` (este archivo)
+### 1. Project structure
+- [x] Create `cut/` folder
+- [x] Create `INFO.md` (technical documentation)
+- [x] Create `PLAN.md` (this file)
 
-### 2. Interfaz (`index.html`)
-- [x] Header con nav MEDUSA + controles (file, cut, paper, view)
-- [x] Tab bar source/result con tools por tab
-- [x] Paneles de canvas + modales (preview, sheet)
-- [x] Toast para feedback
+### 2. Interface (`index.html`)
+- [x] Header with MEDUSA nav + controls (file, cut, paper, view)
+- [x] Source/result tab bar with per-tab tools
+- [x] Canvas panels + modals (preview, sheet)
+- [x] Toast for feedback
 
-### 3. Estilos (`style.css`)
-- [x] Fondo blanco, texto negro, tipografías Playfair Display + Inter
-- [x] Controles inline con subrayado (estilo autocutter)
-- [x] Responsive con canvas que se adapta al viewport
+### 3. Styles (`style.css`)
+- [x] White background, black text, Playfair Display + Inter typography
+- [x] Inline underlined controls (autocutter style)
+- [x] Responsive with canvas adapting to the viewport
 
-### 4. Lógica (`app.js`)
+### 4. Logic (`app.js`)
 - [x] Upload + drag & drop
-- [x] Generación de grilla por subdivisión de área
-- [x] Placement en espiral con RNG sembrado
-- [x] Semilla reproducible (6 caracteres)
-- [x] Modo aware (corte por bordes fuertes)
-- [x] Rotación aleatoria por pieza
+- [x] Grid generation by area subdivision
+- [x] Spiral placement with seeded RNG
+- [x] Reproducible seed (6 characters)
+- [x] Aware mode (cut by strong edges)
+- [x] Random rotation per piece
 - [x] Aspect ratio (none / a4 / 4:5)
 - [x] Paper: bg, padding, title band
-- [x] Efectos: none, b&w, threshold, posterize, dither
+- [x] Effects: none, b&w, threshold, posterize, dither
 - [x] Grid overlay + stroke toggle
 - [x] Crop marks + bleed
-- [x] Sheet view (todas las celdas en hoja A4)
+- [x] Sheet view (all cells on an A4 sheet)
 - [x] Preview modal + save PNG
 
-### 5. Verificación
-- [x] Probar con imagen local
-- [x] Probar semillas reproducibles
-- [x] Verificar descarga PNG
+### 5. Verification
+- [x] Test with local image
+- [x] Test reproducible seeds
+- [x] Verify PNG download
 
-## Dependencias
+## Dependencies
 
-- Paso 4 depende de 2 y 3 (estructura y estilos listos).
-- El algoritmo de grid/placement es independiente de la UI.
+- Step 4 depends on 2 and 3 (structure and styles ready).
+- The grid/placement algorithm is independent of the UI.
 
-## Estimación
+## Estimation
 
-| Fase | Esfuerzo |
+| Phase | Effort |
 |---|---|
-| Estructura + docs | Bajo |
-| Interfaz + estilos | Medio |
-| Lógica Canvas | Alto |
-| Verificación | Bajo |
+| Structure + docs | Low |
+| Interface + styles | Medium |
+| Canvas logic | High |
+| Verification | Low |
 
-## Riesgos
+## Risks
 
-- Imágenes muy grandes → el canvas de resultado puede consumir memoria; se escala la fuente a 1000px.
-- El placement en espiral puede producir composiciones muy alargadas → se compensa con aspect ratio o padding.
-- `getImageData` en modo aware es costoso → se muestrea una sola línea por celda.
+- Very large images → the result canvas can consume memory; the source is scaled to 1000px.
+- Spiral placement can produce very elongated compositions → compensated with aspect ratio or padding.
+- `getImageData` in aware mode is expensive → a single line per cell is sampled.
