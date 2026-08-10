@@ -73,6 +73,7 @@ h1 .logo:hover {
   row-gap: 10px;
   flex-wrap: wrap;
   align-items: center;
+  margin-left: auto;
 }
 
 .control-group {

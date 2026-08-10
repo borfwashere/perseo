@@ -49,7 +49,7 @@
       gap: 1.5rem;
       list-style: none;
       align-items: center;
-      margin-right: 8px;
+      margin-left: auto;
     }
     .nav-links a {
       font-size: 0.8rem;
@@ -117,7 +117,6 @@
     @keyframes pulse { 50% { opacity: .4; } }
 
     .status {
-      margin-left: auto;
       font-size: 12px;
       opacity: .6;
       white-space: nowrap;
@@ -267,12 +266,7 @@
 </head>
 <body>
   <div class="toolbar">
-    <span class="brand"><a href="../">MEDUSA</a></span>
-    <nav class="nav-links">
-      <a href="../mindcut/index.html">mind</a>
-      <a href="../cut/index.html">cut</a>
-      <a href="#" class="active">scanner</a>
-    </nav>
+    <span class="brand"><a href="../index.html">MEDUSA</a></span>
     <button class="btn" id="btnLoad">Load Image</button>
     <button class="btn btn-primary" id="btnScan">Start Scan</button>
     <button class="btn" id="btnStop">Stop</button>
@@ -306,6 +300,11 @@
     <button class="btn" id="btnSavePng">Save PNG</button>
     <button class="btn" id="btnSaveWebM">Save WebM</button>
     <span class="status" id="statusText">Load an image to start</span>
+    <nav class="nav-links">
+      <a href="../mindcut/index.html">mind</a>
+      <a href="../cut/index.html">cut</a>
+      <a href="#" class="active">scanner</a>
+    </nav>
   </div>
 
   <div class="scan-area">
