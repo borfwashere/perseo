@@ -1,0 +1,16 @@
+{
+  "name": "medusa",
+  "version": "1.0.0",
+  "description": "Herramientas de manipulación visual: cortar, reordenar y multiplicar imágenes.",
+  "private": true,
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "canvas",
+    "image",
+    "manipulation",
+    "visual"
+  ],
+  "license": "UNLICENSED"
+}

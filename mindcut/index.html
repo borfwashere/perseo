@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mindcut – Cortar. Reordenar. Multiplicar.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="top-bar">
+        <a href="../" class="logo">MEDUSA</a>
+        <nav class="nav-links">
+            <a href="#app" class="active">mind</a>
+            <a href="../cut/index.html">cut</a>
+            <a href="../scanner/index.html">scanner</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-eyebrow"><br></div>
+            <h1 class="hero-title"><span style="font-family: &quot;Playfair Display&quot;, serif; font-size: 35.2px; font-style: italic; background-color: rgb(255, 255, 255);">"Nada nuevo, nada eliminado."</span></h1>
+            <p class="hero-subtitle">
+                
+                Una imagen se fractura en tiras. Cada tira viaja a un nuevo lugar.
+                De un solo corte nacen múltiples versiones de lo que ya existía.
+            
+            </p>
+        </div>
+    </section>
+
+    <section class="app" id="app">
+        <header class="toolbar">
+            <div class="control-group">
+                <span class="group-label">file</span>
+                <label class="btn" for="upload">upload</label>
+                <input type="file" id="upload" accept="image/*" hidden>
+            </div>
+
+            <div class="control-group">
+                <span class="group-label">cut</span>
+                <button id="cut" class="btn primary" disabled title="aplicar corte">cut</button>
+                <label class="stepper" title="número de tiras">
+                    slices
+                    <button type="button" id="slices-down" class="step" aria-label="decrease">-</button>
+                    <input type="number" id="slices-input" min="2" max="50" value="10">
+                    <button type="button" id="slices-up" class="step" aria-label="increase">+</button>
+                </label>
+            </div>
+
+            <div class="control-group">
+                <span class="group-label">copies</span>
+                <button id="copies-2" class="btn active" title="2 copias">2</button>
+                <button id="copies-4" class="btn" title="4 copias">4</button>
+            </div>
+
+            <div class="control-group">
+                <span class="group-label">effect</span>
+                <label class="select-control" title="filtro aplicado al resultado">
+                    <select id="effect">
+                        <option value="none">effect: none</option>
+                        <option value="bw">effect: b&amp;w</option>
+                        <option value="threshold">effect: threshold</option>
+                        <option value="dither">effect: dither</option>
+                        <option value="invert">effect: invert</option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="control-group">
+                <span class="group-label">save</span>
+                <button id="save" class="btn" disabled title="descargar resultado">save</button>
+            </div>
+        </header>
+
+        <main class="workspace">
+            <section class="panel">
+                <div class="panel-label">source</div>
+                <div id="source-wrap" class="canvas-wrap empty">drop or upload an image</div>
+            </section>
+            <section class="panel">
+                <div class="panel-label">result</div>
+                <div id="result-wrap" class="canvas-wrap empty">press cut</div>
+                <div id="downloads" class="downloads"></div>
+            </section>
+        </main>
+    </section>
+
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-quote">
+                    <br>
+                </div>
+                <div class="about-content">
+                    <h2 class="section-title"><br></h2>
+                    <p class="section-text">
+                        <br>
+                    </p>
+                    <p class="section-text">
+                        <br>
+                
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="app.js"></script>
+    <div class="page-footer">© 2026 MEDUSA</div>
+</body>
+</html>

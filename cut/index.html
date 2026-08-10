@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cut — MEDUSA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1><a href="../" class="logo">MEDUSA</a></h1>
+        <nav class="nav-links">
+            <a href="../mindcut/index.html">mind</a>
+            <a href="#" class="active">cut</a>
+            <a href="../scanner/index.html">scanner</a>
+        </nav>
+        <div class="controls">
+            <div class="control-group">
+                <span class="group-label">file</span>
+                <label class="btn" for="upload">upload</label>
+                <input type="file" id="upload" accept="image/*" hidden>
+            </div>
+
+            <div class="control-group">
+                <span class="group-label">cut</span>
+                <button id="cut" class="primary" disabled title="reshuffle (new seed)">cut</button>
+                <label class="cuts-control" title="number of cells">
+                    cuts
+                    <button type="button" id="cuts-down" class="step" aria-label="decrease">−</button>
+                    <input type="number" id="cuts-input" min="2" max="200" value="10">
+                    <button type="button" id="cuts-up" class="step" aria-label="increase">+</button>
+                </label>
+                <button id="aware-btn" title="cut along strong edges">aware: off</button>
+            </div>
+
+            <div class="control-group">
+                <span class="group-label">paper</span>
+                <button id="rotate-btn" title="random 90° rotation per piece">rotate: off</button>
+                <button id="ar-btn" title="force result aspect ratio">ar: off</button>
+                <label class="color-control" title="paper background color">
+                    bg
+                    <input type="color" id="bg-color" value="#ffffff">
+                </label>
+                <label class="slider-control" title="inner padding of paper">
+                    pad
+                    <input type="range" id="pad-slider" min="0" max="20" value="3">
+                    <span id="pad-val">3%</span>
+                </label>
+                <label class="slider-control" title="title band height">
+                    title
+                    <input type="range" id="title-slider" min="0" max="40" value="8">
+                    <span id="title-val">8%</span>
+                </label>
+            </div>
+
+            <div class="control-group">
+                <span class="group-label">view</span>
+                <button id="crop-btn" title="add crop marks + bleed when saving">crop: off</button>
+                <label class="select-control" title="image effect applied to all renders">
+                    <select id="effect">
+                        <option value="none">effect: none</option>
+                        <option value="bw">effect: b&amp;w</option>
+                        <option value="threshold">effect: threshold</option>
+                        <option value="posterize">effect: posterize</option>
+                        <option value="dither">effect: dither</option>
+                    </select>
+                </label>
+                <button id="sheet" disabled title="show all cells laid out on a sheet">sheet</button>
+            </div>
+        </div>
+    </header>
+
+    <nav class="tab-bar">
+        <button class="tab" data-tab="source">source</button>
+        <button class="tab" data-tab="result">result</button>
+        <div class="tab-tools" data-for="source">
+            <button id="src-save" class="mini" disabled>save</button>
+        </div>
+        <div class="tab-tools" data-for="result">
+            <label class="seed-control mini" title="copy this seed, or paste one to reproduce a result">
+                seed
+                <input type="text" id="seed-input" maxlength="6" spellcheck="false" autocomplete="off" autocapitalize="characters">
+            </label>
+            <button id="grid-btn" class="mini" disabled title="overlay a ghost grid under the cells">grid: off</button>
+            <button id="stroke" class="mini" disabled>stroke: on</button>
+            <button id="download" class="mini" disabled>save</button>
+        </div>
+    </nav>
+
+    <main>
+        <section class="panel" data-panel="source">
+            <div id="source-wrap" class="canvas-wrap empty">drop or upload an image</div>
+        </section>
+        <section class="panel" data-panel="result">
+            <div id="result-wrap" class="canvas-wrap empty">press cut</div>
+        </section>
+    </main>
+
+    <div id="preview-modal" class="modal hidden">
+        <div class="modal-bg" data-close="preview"></div>
+        <div class="modal-tools">
+            <button id="preview-save" class="mini">save</button>
+            <button id="preview-close" class="mini">close</button>
+        </div>
+        <div class="preview-stage">
+            <img id="preview-img" alt="preview">
+        </div>
+    </div>
+
+    <div id="modal" class="modal hidden">
+        <div class="modal-bg"></div>
+        <div class="sheet-info" id="sheet-info">sheet</div>
+        <div class="modal-tools">
+            <button id="sheet-save" class="mini">save</button>
+            <button id="modal-close" class="mini">close</button>
+        </div>
+        <div class="modal-inner">
+            <div class="sheet" id="sheet-content"></div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
