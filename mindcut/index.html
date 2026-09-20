@@ -2,25 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0000f2">
     <title>mindcut – Cut. Rearrange. Multiply.</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../base.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header class="top-bar">
-        <a href="../index.html" class="logo">MEDUSA</a>
-        <nav class="nav-links">
-            <a href="#app" class="active">mind</a>
-            <a href="../cut/index.html">cut</a>
-            <a href="../scanner/index.html">scanner</a>
-        </nav>
-    </header>
-
-<section class="app" id="app">
-        <header class="toolbar">
+    <header>
+        <h1>MINDCUT</h1>
+        <div class="controls">
             <div class="control-group">
                 <span class="group-label">file</span>
                 <label class="btn" for="upload">upload</label>
@@ -29,7 +20,7 @@
 
             <div class="control-group">
                 <span class="group-label">cut</span>
-<button id="cut" class="btn primary" disabled title="apply cut">cut</button>
+                <button id="cut" class="btn primary" disabled title="apply cut">cut</button>
                 <label class="stepper" title="number of slices">
                     slices
                     <button type="button" id="slices-down" class="step" aria-label="decrease">-</button>
@@ -40,7 +31,7 @@
 
             <div class="control-group">
                 <span class="group-label">copies</span>
-<button id="copies-2" class="btn active" title="2 copies">2</button>
+                <button id="copies-2" class="btn active" title="2 copies">2</button>
                 <button id="copies-4" class="btn" title="4 copies">4</button>
             </div>
 
@@ -61,8 +52,15 @@
                 <span class="group-label">save</span>
                 <button id="save" class="btn" disabled title="download result">save</button>
             </div>
-        </header>
+        </div>
+        <nav class="nav-links">
+            <a href="../index.html">PERSEO</a>
+            <a href="../cut/index.html">cut</a>
+            <a href="../scanner/index.html">scanner</a>
+        </nav>
+    </header>
 
+<section class="app" id="app">
         <main class="workspace">
             <section class="panel">
                 <div class="panel-label">source</div>
@@ -76,7 +74,8 @@
         </main>
     </section>
 
-<script src="app.js"></script>
-    <div class="page-footer">© 2026 MEDUSA</div>
+<img id="preset" src="../perseo.png" alt="" style="position:absolute;left:-9999px;top:-9999px">
+
+<script src="app.js?v=2"></script>
 </body>
 </html>

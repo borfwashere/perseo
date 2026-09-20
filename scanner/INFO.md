@@ -11,7 +11,7 @@ Scanner digitizes the physical gesture of scanning: the image is positioned in t
 - HTML5 + CSS3 + vanilla JavaScript
 - Canvas 2D API + `MediaRecorder` for video
 - No external dependencies or build step
-- Fonts: Playfair Display (titles) + Inter (text)
+- Fonts: Sigurd Variable (display) + Courier Prime (mono) + Rules Variable
 
 ## Structure
 

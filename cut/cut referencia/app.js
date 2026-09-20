@@ -6,6 +6,7 @@ const cutsUp = document.getElementById('cuts-up');
 const rotateBtn = document.getElementById('rotate-btn');
 const awareBtn = document.getElementById('aware-btn');
 const arBtn = document.getElementById('ar-btn');
+const cropBtn = document.getElementById('crop-btn');
 const effectSel = document.getElementById('effect');
 const bgColorInput = document.getElementById('bg-color');
 const padSlider = document.getElementById('pad-slider');
@@ -45,14 +46,15 @@ tabBtns.forEach((t) => t.addEventListener('click', () => setTab(t.dataset.tab)))
 setTab('source');
 
 function fitCanvases() {
-  const mainEl = document.querySelector('main');
-  if (!mainEl) return;
-  const available = Math.max(120, Math.floor(mainEl.getBoundingClientRect().height) - 24);
+  const bar = document.querySelector('.tab-bar');
+  if (!bar) return;
+  const tabBottom = bar.getBoundingClientRect().bottom;
+  const available = Math.max(120, window.innerHeight - tabBottom - 24);
   document.documentElement.style.setProperty('--canvas-max-h', available + 'px');
 }
 fitCanvases();
 window.addEventListener('resize', fitCanvases);
-new ResizeObserver(fitCanvases).observe(document.querySelector('main'));
+new ResizeObserver(fitCanvases).observe(document.querySelector('header'));
 
 let image = null;
 let cells = [];
@@ -68,6 +70,7 @@ let gridOn = true;
 let rotateOn = false;
 let awareOn = false;
 let aspectRatio = '4:5';
+let cropOn = false;
 let paddingPct = parseInt(padSlider.value, 10);
 let titlePct = parseInt(titleSlider.value, 10);
 let paperBg = bgColorInput.value;
@@ -132,6 +135,7 @@ gridBtn.addEventListener('click', () => {
 
 bindToggle(rotateBtn, () => rotateOn, (v) => { rotateOn = v; }, 'rotate', () => { if (image) rebuild(false); });
 bindToggle(awareBtn, () => awareOn, (v) => { awareOn = v; }, 'aware', () => { if (image) rebuild(false); });
+bindToggle(cropBtn, () => cropOn, (v) => { cropOn = v; }, 'crop', () => {});
 
 const AR_CYCLE = ['none', 'a4', '4:5'];
 function arLabel(v) { return v === 'none' ? 'off' : v; }
@@ -194,7 +198,7 @@ sourceWrap.addEventListener('click', () => {
 });
 resultWrap.addEventListener('click', () => {
   if (!lastResult || resultWrap.classList.contains('empty')) return;
-  openPreview('result', lastResult);
+  openPreview('result', cropOn ? composeWithCropMarks(lastResult) : lastResult);
 });
 previewCloseBtn.addEventListener('click', closePreview);
 previewBg.addEventListener('click', closePreview);
@@ -210,7 +214,7 @@ document.addEventListener('keydown', (e) => {
 
 downloadBtn.addEventListener('click', () => {
   if (!lastResult) return;
-  const out = lastResult;
+  const out = cropOn ? composeWithCropMarks(lastResult) : lastResult;
   downloadCanvas(out, fileName('result'));
 });
 
@@ -222,7 +226,7 @@ srcSaveBtn.addEventListener('click', () => {
 sheetSaveBtn.addEventListener('click', () => {
   if (!cells.length || !image) return;
   const sheet = composeSheet();
-  const out = sheet;
+  const out = cropOn ? composeWithCropMarks(sheet, true) : sheet;
   downloadCanvas(out, fileName('sheet'));
 });
 
@@ -297,9 +301,7 @@ function rebuild(newSeed) {
   updateSeedUi();
 
   const srcTarget = 1000;
-  const iw = image.naturalWidth || image.width;
-  const ih = image.naturalHeight || image.height;
-  const r = iw / ih;
+  const r = image.width / image.height;
   srcW = r >= 1 ? srcTarget : Math.round(srcTarget * r);
   srcH = r >= 1 ? Math.round(srcTarget / r) : srcTarget;
 
@@ -534,7 +536,7 @@ function composeSheet() {
   ctx.textBaseline = 'top';
   ctx.fillStyle = '#000';
 
-  const origScale = (image.naturalWidth || image.width) / srcW;
+  const origScale = image.width / srcW;
 
   cells.forEach((cell, i) => {
     const col = i % cols;
@@ -559,6 +561,48 @@ function composeSheet() {
 
   return c;
 }
+function composeWithCropMarks(source, sheet) {
+  const sw = source.width;
+  const sh = source.height;
+  const bleed = Math.round(Math.max(sw, sh) * 0.035);
+  const totalW = sw + bleed * 2;
+  const totalH = sh + bleed * 2;
+
+  const c = document.createElement('canvas');
+  c.width = totalW;
+  c.height = totalH;
+  const ctx = c.getContext('2d');
+
+  ctx.fillStyle = paperBg;
+  ctx.fillRect(0, 0, totalW, totalH);
+  ctx.drawImage(source, bleed, bleed);
+
+  const markLen = Math.round(bleed * 0.6);
+  const markGap = Math.round(bleed * 0.25);
+  const markStroke = Math.max(1, Math.round(bleed * 0.04));
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = markStroke;
+
+  const corners = [
+    { x: bleed, y: bleed },
+    { x: bleed + sw, y: bleed },
+    { x: bleed, y: bleed + sh },
+    { x: bleed + sw, y: bleed + sh },
+  ];
+  for (const cn of corners) {
+    const dx = cn.x === bleed ? -1 : 1;
+    const dy = cn.y === bleed ? -1 : 1;
+    ctx.beginPath();
+    ctx.moveTo(cn.x + dx * markGap, cn.y);
+    ctx.lineTo(cn.x + dx * (markGap + markLen), cn.y);
+    ctx.moveTo(cn.x, cn.y + dy * markGap);
+    ctx.lineTo(cn.x, cn.y + dy * (markGap + markLen));
+    ctx.stroke();
+  }
+
+  return c;
+}
+
 function openPreview(type, canvas) {
   previewSource = { type, canvas };
   previewImg.src = canvas.toDataURL('image/png');
@@ -581,7 +625,7 @@ function openSheet() {
   sheetContent.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
   sheetContent.innerHTML = '';
 
-  const origScale = (image.naturalWidth || image.width) / srcW;
+  const origScale = image.width / srcW;
   cells.forEach((c) => {
     const slot = document.createElement('div');
     slot.className = 'sheet-cell';
@@ -801,12 +845,6 @@ function applyEffect() {
       const v = gs[i] < 128 ? 0 : 255;
       data[di] = data[di + 1] = data[di + 2] = v;
     }
-  } else if (effectName === 'invert') {
-    for (let i = 0; i < data.length; i += 4) {
-      data[i] = 255 - data[i];
-      data[i + 1] = 255 - data[i + 1];
-      data[i + 2] = 255 - data[i + 2];
-    }
   }
 
   ctx.putImageData(imgData, 0, 0);
@@ -832,16 +870,3 @@ if (document.fonts && document.fonts.load) {
     if (image && resultState) drawResultCanvas();
   });
 }
-
-const presetImg = document.getElementById('preset');
-const onPresetLoad = () => {
-  image = presetImg;
-  cutBtn.disabled = false;
-  sheetBtn.disabled = false;
-  strokeBtn.disabled = false;
-  gridBtn.disabled = false;
-  srcSaveBtn.disabled = false;
-  rebuild(false);
-};
-if (presetImg.complete && presetImg.naturalWidth > 0) onPresetLoad();
-else presetImg.addEventListener('load', onPresetLoad);

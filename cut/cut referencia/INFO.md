@@ -47,6 +47,7 @@ Las piezas se dibujan sobre un "papel" con color de fondo, padding y banda de t√
 | `bg` | Color de fondo del papel |
 | `pad` | Padding interior del papel |
 | `title` | Altura de la banda de t√≠tulo |
+| `crop` | Marcas de corte + bleed al guardar |
 | `effect` | Filtro aplicado a todos los renders |
 | `seed` | Semilla para reproducir un resultado |
 | `grid` | Overlay de grilla fantasma |

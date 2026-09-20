@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>cut — PERSEO</title>
+    <title>cut — MEDUSA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -11,7 +11,12 @@
 </head>
 <body>
     <header>
-        <h1>CUT</h1>
+        <h1><a href="../" class="logo">MEDUSA</a></h1>
+        <nav class="nav-links">
+            <a href="../mindcut/index.html">mind</a>
+            <a href="#" class="active">cut</a>
+            <a href="../scanner/index.html">scanner</a>
+        </nav>
         <div class="controls">
             <div class="control-group">
                 <span class="group-label">file</span>
@@ -53,6 +58,7 @@
 
             <div class="control-group">
                 <span class="group-label">view</span>
+                <button id="crop-btn" title="add crop marks + bleed when saving">crop: off</button>
                 <label class="select-control" title="image effect applied to all renders">
                     <select id="effect">
                         <option value="none">effect: none</option>
@@ -60,16 +66,11 @@
                         <option value="threshold">effect: threshold</option>
                         <option value="posterize">effect: posterize</option>
                         <option value="dither">effect: dither</option>
-                        <option value="invert">effect: invert</option>
                     </select>
                 </label>
+                <button id="sheet" disabled title="show all cells laid out on a sheet">sheet</button>
             </div>
         </div>
-        <nav class="nav-links">
-            <a href="../index.html">PERSEO</a>
-            <a href="../mindcut/index.html">mind</a>
-            <a href="../scanner/index.html">scanner</a>
-        </nav>
     </header>
 
     <nav class="tab-bar">
@@ -85,7 +86,6 @@
             </label>
             <button id="grid-btn" class="mini" disabled title="overlay a ghost grid under the cells">grid: off</button>
             <button id="stroke" class="mini" disabled>stroke: on</button>
-            <button id="sheet" class="mini" disabled title="show all cells laid out on a sheet">sheet</button>
             <button id="download" class="mini" disabled>save</button>
         </div>
     </nav>
@@ -124,8 +124,6 @@
 
     <div id="toast" class="toast hidden"></div>
 
-    <img id="preset" src="../perseo.png" alt="" style="position:absolute;left:-9999px;top:-9999px">
-
-    <script src="app.js?v=2"></script>
+    <script src="app.js"></script>
 </body>
 </html>

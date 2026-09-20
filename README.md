@@ -1,4 +1,4 @@
-# MEDUSA
+# PERSEO
 
 Visual manipulation tools. Three web apps to cut, rearrange and multiply images, each exploring a different way of deconstructing the visual.
 
@@ -13,8 +13,9 @@ Visual manipulation tools. Three web apps to cut, rearrange and multiply images,
 ## Structure
 
 ```
-MEDUSA/
+PERSEO/
 ├── index.html        Landing page
+├── fonts/            SISIFO typefaces (Sigurd, Courier Prime, Rules)
 ├── mindcut/          "mind" tool (Top Breeder)
 ├── cut/              "cut" tool (seed-based fragmentation)
 └── scanner/          "scanner" tool (scanner simulator)
@@ -31,8 +32,8 @@ Open `index.html` in a browser. No server or build step required: all processing
 - HTML5 + CSS3 + vanilla JavaScript
 - Canvas 2D API
 - No external dependencies
-- Fonts: Playfair Display + Inter
+- Fonts: Sigurd Variable + Courier Prime + Rules Variable (SISIFO identity)
 
 ## License
 
-© 2026 MEDUSA
+© 2026 PERSEO

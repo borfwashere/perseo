@@ -13,14 +13,14 @@ MindCut digitizes that process with HTML5 Canvas.
 - HTML5 + CSS3 + vanilla JavaScript
 - Canvas 2D API (`drawImage` with source/destination cropping)
 - No external dependencies or build step
-- Fonts: Playfair Display (titles) + Inter (text)
+- Fonts: Sigurd Variable (display) + Courier Prime (mono) + Rules Variable
 
 ## Structure
 
 ```
 mindcut/
 ├── index.html   Structure: top bar + toolbar + workspace
-├── style.css    Minimalist B&W styles
+├── style.css    SISIFO-blue styles
 ├── app.js       Logic: upload, slicing, effects, save
 ├── INFO.md      This document
 └── PLAN.md      Implementation plan

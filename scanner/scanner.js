@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const COL_BG = '#fafafa';
+  const COL_BG = '#0000f2';
   const COL_FG = '#111111';
   const COL_PURPLE = '#111111';
 
@@ -39,20 +39,12 @@
       this.scanComplete = false;
       this.scanPos = 0;
       this.lastTime = 0;
-      this.needsEffectApply = false;
       this.activeLayer = null;
       this.layers = [];
-      this.ghost = true;
 
-      this.effects = {
-        bw: false,
-        threshold: false,
-        invert: false,
-        posterize: false,
-        noise: false,
-        dither: false
-      };
-      this.effectsBackup = null;
+      this.activeEffect = 'none';
+      this.effectedCanvas = null;
+      this.effectedDirty = true;
 
       this.undoStack = [];
       this.recording = false;
@@ -70,10 +62,20 @@
       this.bindEvents();
       this.lastTime = performance.now();
       requestAnimationFrame(() => this.render());
+      const preset = document.getElementById('preset');
+      const onPresetLoad = () => {
+        const c = document.createElement('canvas');
+        c.width = preset.naturalWidth;
+        c.height = preset.naturalHeight;
+        c.getContext('2d').drawImage(preset, 0, 0);
+        c.toBlob((blob) => this.loadImage(new File([blob], 'perseo.png', { type: 'image/png' }), () => this.startScan()));
+      };
+      if (preset.complete && preset.naturalWidth > 0) onPresetLoad();
+      else preset.addEventListener('load', onPresetLoad);
     }
 
     computeLayout() {
-      const toolbarH = (document.querySelector('.toolbar').offsetHeight || 72);
+      const toolbarH = (document.querySelector('header').offsetHeight || 72);
       const pad = 24;
       const gap = 14;
       const availW = window.innerWidth - pad * 2;
@@ -107,10 +109,10 @@
       document.getElementById('btnScan').addEventListener('click', () => this.startScan());
       document.getElementById('btnStop').addEventListener('click', () => this.stopScan());
       document.getElementById('btnUndo').addEventListener('click', () => this.undo());
-      document.getElementById('btnEffects').addEventListener('click', () => this.openEffectsModal());
-      document.getElementById('btnGhost').addEventListener('click', () => {
-        this.ghost = !this.ghost;
-        document.getElementById('btnGhost').classList.toggle('active', this.ghost);
+      document.getElementById('effect').addEventListener('change', e => {
+        this.activeEffect = e.target.value;
+        this.effectedDirty = true;
+        this.drawResult();
       });
       document.getElementById('btnSavePng').addEventListener('click', () => this.exportPNG());
       document.getElementById('btnSaveWebM').addEventListener('click', () => this.exportWebM());
@@ -120,15 +122,6 @@
         this.recArmed = !this.recArmed;
         document.getElementById('btnRec').classList.toggle('armed', this.recArmed);
         this.setStatus(this.recArmed ? 'Recording armed — Start Scan to begin' : 'Recording disabled');
-      });
-
-      document.getElementById('btnApplyFx').addEventListener('click', () => this.closeEffectsModal(true));
-      document.getElementById('btnCloseFx').addEventListener('click', () => this.closeEffectsModal(false));
-      document.querySelectorAll('.fx-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          btn.classList.toggle('active');
-          this.renderFxPreview();
-        });
       });
 
       this.srcCanvas.addEventListener('mousedown', e => this.mouseDown(e));
@@ -151,24 +144,32 @@
       window.addEventListener('resize', () => this.resize());
     }
 
-    loadImage(file) {
-      if (!file || !file.type.startsWith('image/')) return;
+    loadImage(file, done) {
+      if (!file) return;
+      const apply = img => {
+        this.sourceImg = img;
+        this.fitImage();
+        this.layers = [];
+        this.activeLayer = null;
+        this.scanning = false;
+        this.scanComplete = false;
+        this.scanPos = 0;
+        this.rotation = 0;
+        this.undoStack = [];
+        this.effectedDirty = true;
+        this.setStatus('Drag to move, right-click to rotate');
+        this.toast('Image loaded');
+        if (done) done();
+      };
+      if (file instanceof HTMLImageElement && file.complete) {
+        apply(file);
+        return;
+      }
+      if (!file.type || !file.type.startsWith('image/')) return;
       const reader = new FileReader();
       reader.onload = e => {
         const img = new Image();
-        img.onload = () => {
-          this.sourceImg = img;
-          this.fitImage();
-          this.layers = [];
-          this.activeLayer = null;
-          this.scanning = false;
-          this.scanComplete = false;
-          this.scanPos = 0;
-          this.rotation = 0;
-          this.undoStack = [];
-          this.setStatus('Drag to move, right-click to rotate');
-          this.toast('Image loaded');
-        };
+        img.onload = () => apply(img);
         img.src = e.target.result;
       };
       reader.readAsDataURL(file);
@@ -210,6 +211,7 @@
       if (!this.activeLayer) return;
       this.layers.push({ canvas: this.activeLayer, blend: this.currentBlend() });
       this.activeLayer = null;
+      this.effectedDirty = true;
     }
 
     currentBlend() {
@@ -229,7 +231,6 @@
         this.scanning = false;
         this.scanComplete = true;
         this.commitActiveLayer();
-        this.needsEffectApply = true;
         this.stopRecording();
         this.setStatus('Scan complete');
         this.toast('Scan complete');
@@ -281,20 +282,25 @@
       }
       ctx.globalCompositeOperation = 'source-over';
 
-      if (this.needsEffectApply) {
-        this.applyEffectsToCanvas();
-        this.needsEffectApply = false;
+      if (this.activeEffect !== 'none') {
+        if (this.effectedDirty || this.scanning) this.renderEffected();
+        ctx.drawImage(this.effectedCanvas, 0, 0);
       }
+    }
 
-      if (this.ghost && this.sourceImg && !this.scanning) {
-        ctx.save();
-        ctx.globalAlpha = 0.25;
-        ctx.translate(this.imgX + this.imgW / 2, this.imgY + this.imgH / 2);
-        ctx.rotate(this.rotation);
-        ctx.drawImage(this.sourceImg, -this.imgW / 2, -this.imgH / 2, this.imgW, this.imgH);
-        ctx.restore();
-        ctx.globalAlpha = 1;
+    renderEffected() {
+      if (!this.effectedCanvas) {
+        this.effectedCanvas = document.createElement('canvas');
+        this.effectedCanvas.width = this.panelW;
+        this.effectedCanvas.height = this.panelH;
       }
+      const ectx = this.effectedCanvas.getContext('2d');
+      ectx.clearRect(0, 0, this.panelW, this.panelH);
+      ectx.drawImage(this.outCanvas, 0, 0);
+      const imageData = ectx.getImageData(0, 0, this.panelW, this.panelH);
+      this.applyEffect(this.activeEffect, imageData);
+      ectx.putImageData(imageData, 0, 0);
+      this.effectedDirty = false;
     }
 
     drawScanLine() {
@@ -306,52 +312,36 @@
       ctx.fillRect(this.scanPos - 1, 0, 2, this.panelH);
     }
 
-    applyEffectsToCanvas() {
-      if (!this.anyEffectActive()) return;
-      const imageData = this.outCtx.getImageData(0, 0, this.panelW, this.panelH);
-      this.applyEffects(imageData);
-      this.outCtx.putImageData(imageData, 0, 0);
-    }
-
-    anyEffectActive() {
-      const fx = this.effects;
-      return fx.bw || fx.threshold || fx.invert || fx.posterize || fx.noise || fx.dither;
-    }
-
-    applyEffects(imageData) {
-      const fx = this.effects;
+    applyEffect(effectName, imageData) {
       const d = imageData.data;
 
-      for (let i = 0; i < d.length; i += 4) {
-        let r = d[i], g = d[i + 1], b = d[i + 2];
-
-        if (fx.bw) {
-          const gray = r * 0.299 + g * 0.587 + b * 0.114;
-          r = g = b = gray;
+      if (effectName === 'bw') {
+        for (let i = 0; i < d.length; i += 4) {
+          const gray = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
+          d[i] = d[i + 1] = d[i + 2] = gray;
         }
-        if (fx.threshold) {
-          const gray = r * 0.299 + g * 0.587 + b * 0.114;
+      } else if (effectName === 'threshold') {
+        for (let i = 0; i < d.length; i += 4) {
+          const gray = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
           const v = gray > 128 ? 255 : 0;
-          r = g = b = v;
+          d[i] = d[i + 1] = d[i + 2] = v;
         }
-        if (fx.invert) { r = 255 - r; g = 255 - g; b = 255 - b; }
-        if (fx.posterize) {
-          const step = 255 / 7;
-          r = Math.round(r / step) * step;
-          g = Math.round(g / step) * step;
-          b = Math.round(b / step) * step;
+      } else if (effectName === 'invert') {
+        for (let i = 0; i < d.length; i += 4) {
+          d[i] = 255 - d[i];
+          d[i + 1] = 255 - d[i + 1];
+          d[i + 2] = 255 - d[i + 2];
         }
-        if (fx.noise) {
-          const n = (Math.random() - 0.5) * 60;
-          r += n; g += n; b += n;
+      } else if (effectName === 'posterize') {
+        const step = 255 / 7;
+        for (let i = 0; i < d.length; i += 4) {
+          d[i] = Math.round(d[i] / step) * step;
+          d[i + 1] = Math.round(d[i + 1] / step) * step;
+          d[i + 2] = Math.round(d[i + 2] / step) * step;
         }
-
-        d[i] = Math.max(0, Math.min(255, Math.round(r)));
-        d[i + 1] = Math.max(0, Math.min(255, Math.round(g)));
-        d[i + 2] = Math.max(0, Math.min(255, Math.round(b)));
+      } else if (effectName === 'dither') {
+        this.floydSteinbergDither(imageData);
       }
-
-      if (fx.dither) this.floydSteinbergDither(imageData);
     }
 
     floydSteinbergDither(imageData) {
@@ -381,8 +371,8 @@
     mouseDown(e) {
       if (!this.sourceImg) return;
       const rect = this.srcCanvas.getBoundingClientRect();
-      const mx = e.clientX - rect.left;
-      const my = e.clientY - rect.top;
+      const mx = (e.clientX - rect.left) * (this.panelW / rect.width);
+      const my = (e.clientY - rect.top) * (this.panelH / rect.height);
       if (mx < 0 || mx > this.panelW || my < 0 || my > this.panelH) return;
       if (e.button === 2) {
         this.rotating = true;
@@ -397,8 +387,8 @@
 
     mouseMove(e) {
       const rect = this.srcCanvas.getBoundingClientRect();
-      const mx = e.clientX - rect.left;
-      const my = e.clientY - rect.top;
+      const mx = (e.clientX - rect.left) * (this.panelW / rect.width);
+      const my = (e.clientY - rect.top) * (this.panelH / rect.height);
       if (this.rotating) {
         const cx = this.imgX + this.imgW / 2, cy = this.imgY + this.imgH / 2;
         const a = Math.atan2(my - cy, mx - cx);
@@ -433,7 +423,7 @@
       if (e.touches.length === 1) {
         const t = e.touches[0];
         const rect = this.srcCanvas.getBoundingClientRect();
-        const mx = t.clientX - rect.left, my = t.clientY - rect.top;
+        const mx = (t.clientX - rect.left) * (this.panelW / rect.width), my = (t.clientY - rect.top) * (this.panelH / rect.height);
         this.dragging = true;
         this.dragOffX = mx - this.imgX;
         this.dragOffY = my - this.imgY;
@@ -449,7 +439,7 @@
       if (e.touches.length === 1 && this.dragging) {
         const t = e.touches[0];
         const rect = this.srcCanvas.getBoundingClientRect();
-        const mx = t.clientX - rect.left, my = t.clientY - rect.top;
+        const mx = (t.clientX - rect.left) * (this.panelW / rect.width), my = (t.clientY - rect.top) * (this.panelH / rect.height);
         this.imgX = mx - this.dragOffX;
         this.imgY = my - this.dragOffY;
       } else if (e.touches.length === 2 && this.pinchDist) {
@@ -490,6 +480,7 @@
       this.activeLayer = null;
       this.scanning = false;
       this.scanPos = 0;
+      this.effectedDirty = true;
       this.setStatus('Undo');
     }
 
@@ -547,58 +538,6 @@
 
     hasResult() {
       return this.layers.length > 0 || (this.activeLayer && this.scanPos > 0);
-    }
-
-    openEffectsModal() {
-      this.effectsBackup = { ...this.effects };
-      this.syncFxControls();
-      document.getElementById('effectsModal').classList.remove('hidden');
-      this.renderFxPreview();
-    }
-
-    closeEffectsModal(apply) {
-      if (!apply) this.effects = this.effectsBackup;
-      document.getElementById('effectsModal').classList.add('hidden');
-      if (apply) this.needsEffectApply = true;
-    }
-
-    syncFxControls() {
-      document.querySelectorAll('.fx-btn').forEach(btn => {
-        btn.classList.toggle('active', !!this.effects[btn.dataset.fx]);
-      });
-    }
-
-    readFxControls() {
-      document.querySelectorAll('.fx-btn').forEach(btn => {
-        this.effects[btn.dataset.fx] = btn.classList.contains('active');
-      });
-    }
-
-    renderFxPreview() {
-      this.readFxControls();
-      const preview = document.getElementById('fxPreview');
-      const pctx = preview.getContext('2d');
-      pctx.clearRect(0, 0, preview.width, preview.height);
-      pctx.fillStyle = COL_BG;
-      pctx.fillRect(0, 0, preview.width, preview.height);
-
-      const scale = Math.min(preview.width / this.panelW, preview.height / this.panelH);
-      const dw = this.panelW * scale, dh = this.panelH * scale;
-      const dx = (preview.width - dw) / 2, dy = (preview.height - dh) / 2;
-
-      for (const layer of this.layers) {
-        pctx.globalCompositeOperation = BLEND_MAP[layer.blend] || 'source-over';
-        pctx.drawImage(layer.canvas, dx, dy, dw, dh);
-      }
-      if (this.activeLayer) {
-        pctx.globalCompositeOperation = 'source-over';
-        pctx.drawImage(this.activeLayer, dx, dy, dw, dh);
-      }
-      pctx.globalCompositeOperation = 'source-over';
-
-      const imageData = pctx.getImageData(0, 0, preview.width, preview.height);
-      this.applyEffects(imageData);
-      pctx.putImageData(imageData, 0, 0);
     }
 
     setFormat(f) {

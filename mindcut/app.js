@@ -11,16 +11,21 @@
         slicesInput: $('slices-input'),
         copies2: $('copies-2'),
         copies4: $('copies-4'),
-        effect: $('effect'),
+effect: $('effect'),
         save: $('save'),
         sourceWrap: $('source-wrap'),
         resultWrap: $('result-wrap')
     };
 
-    var sourceImage = null;
+var sourceImage = null;
     var resultCanvas = null;
     var copiesData = [];
     var copies = 2;
+    var hasRendered = false;
+
+    function autoRender() {
+        if (hasRendered && sourceImage) render();
+    }
 
     function clampSlices(n) {
         return Math.max(2, Math.min(60, n));
@@ -28,16 +33,19 @@
 
     function setSlices(n) {
         els.slicesInput.value = clampSlices(n);
+        autoRender();
     }
 
     function setCopies(n) {
         copies = n;
         els.copies2.classList.toggle('active', n === 2);
         els.copies4.classList.toggle('active', n === 4);
+        autoRender();
     }
 
-    function loadImage(file) {
+function loadImage(file) {
         if (!file || !file.type.match(/^image\//)) return;
+        hasRendered = false;
         var reader = new FileReader();
         reader.onload = function (e) {
             var img = new Image();
@@ -46,6 +54,7 @@
                 drawSource();
                 els.cut.disabled = false;
                 els.save.disabled = false;
+                render();
             };
             img.src = e.target.result;
         };
@@ -179,12 +188,20 @@
         }
         applyEffect(result, els.effect.value);
         resultCanvas = result;
-        copiesData = rawCopies.map(function (c) { return c.toDataURL('image/png'); });
+
         var wrap = els.resultWrap;
         wrap.classList.remove('empty');
         wrap.innerHTML = '';
         wrap.appendChild(result);
-        buildDownloadButtons();
+
+try {
+            copiesData = rawCopies.map(function (c) { return c.toDataURL('image/png'); });
+            buildDownloadButtons();
+        } catch (e) {
+            copiesData = [];
+            buildDownloadButtons();
+        }
+        hasRendered = true;
     }
 
     function save() {
@@ -216,7 +233,9 @@
         loadImage(this.files[0]);
     });
 
-    els.cut.addEventListener('click', function () { render(); });
+els.cut.addEventListener('click', function () { render(); });
+
+    els.effect.addEventListener('change', autoRender);
 
     els.slicesDown.addEventListener('click', function () {
         setSlices(clampSlices(parseInt(els.slicesInput.value, 10) || 10) - 1);
@@ -257,4 +276,17 @@ els.sourceWrap.addEventListener('drop', function (e) {
         var files = e.dataTransfer.files;
         if (files && files.length) loadImage(files[0]);
     });
+
+    var preset = document.getElementById('preset');
+    function onPresetLoad() {
+        var c = document.createElement('canvas');
+        c.width = preset.naturalWidth;
+        c.height = preset.naturalHeight;
+        c.getContext('2d').drawImage(preset, 0, 0);
+        c.toBlob(function (blob) {
+            loadImage(new File([blob], 'perseo.png', { type: 'image/png' }));
+        });
+    }
+    if (preset.complete && preset.naturalWidth > 0) onPresetLoad();
+    else preset.addEventListener('load', onPresetLoad);
 })();

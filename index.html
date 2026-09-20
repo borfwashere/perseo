@@ -3,31 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEDUSA — Visual Manipulation Tools</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#0000f2">
+    <title>PERSEO — Visual Manipulation Tools</title>
+    <link rel="stylesheet" href="base.css">
     <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; font-size: 16px; }
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: #ffffff; color: #111111; line-height: 1.7; overflow-x: hidden; }
-        a { color: #000000; text-decoration: none; transition: color 0.3s ease; }
-        a:hover { color: #555555; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-display);
+            background-color: var(--sisifo-bg);
+            color: var(--sisifo-fg);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
 
-        .hero { position: relative; z-index: 1001; display: flex; align-items: center; justify-content: center; padding: 8rem 2rem 4rem; min-height: 50vh; }
+        .hero {
+            position: relative;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-20) var(--space-8) var(--space-16);
+            min-height: 50vh;
+        }
         .hero-content { max-width: 1200px; width: 100%; text-align: center; }
-        .hero-eyebrow { font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: #000000; margin-bottom: 1.5rem; }
-        .hero-title { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(3rem, 7vw, 6rem); font-weight: 800; color: #000000; line-height: 1.05; margin-bottom: 1.5rem; }
-        .hero-subtitle { font-family: 'Inter', sans-serif; font-size: clamp(1rem, 1.8vw, 1.2rem); font-weight: 300; color: #666666; line-height: 1.6; max-width: 500px; margin: 0 auto; }
+        .hero-eyebrow {
+            font-family: var(--font-mono);
+            font-size: var(--text-md);
+            font-weight: 400;
+            letter-spacing: var(--tracking-wide);
+            text-transform: uppercase;
+            color: var(--sisifo-fg);
+            opacity: 0.6;
+            margin-bottom: var(--space-6);
+        }
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: var(--text-hero);
+            font-weight: 300;
+            letter-spacing: var(--tracking-tight);
+            color: var(--sisifo-fg);
+            line-height: 0.9;
+            margin-bottom: var(--space-6);
+        }
+        .hero-subtitle {
+            font-family: var(--font-display);
+            font-size: var(--text-lg);
+            font-weight: 300;
+            letter-spacing: var(--tracking-tight);
+            color: var(--sisifo-fg);
+            opacity: 0.9;
+            line-height: 1.4;
+            max-width: 500px;
+            margin: 0 auto;
+        }
 
-        .tools { padding: 2rem 2rem 6rem; max-width: 1200px; margin: 0 auto; }
-        .tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
-        .tool-card { border: 1px solid rgba(0,0,0,0.12); padding: 2.5rem 2rem; transition: all 0.3s ease; }
-        .tool-card:hover { border-color: #000000; }
-        .tool-card .tool-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: #000000; margin-bottom: 0.75rem; }
-        .tool-card .tool-desc { font-size: 0.9rem; font-weight: 300; color: #666666; line-height: 1.6; }
+        .tools { padding: var(--space-8) var(--space-8) var(--space-16); max-width: 1200px; margin: 0 auto; }
+        .tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-8); }
+        .tool-card {
+            background: var(--sisifo-paper);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: var(--space-10) var(--space-8);
+            transition: transform var(--transition-base), box-shadow var(--transition-base);
+        }
+        .tool-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); }
+        .tool-card .tool-name {
+            font-family: var(--font-display);
+            font-size: var(--text-2xl);
+            font-weight: 400;
+            letter-spacing: var(--tracking-tight);
+            color: var(--sisifo-bg);
+            margin-bottom: var(--space-3);
+        }
+        .tool-card .tool-desc {
+            font-family: var(--font-mono);
+            font-size: var(--text-sm);
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            color: var(--sisifo-bg);
+            opacity: 0.7;
+            line-height: 1.6;
+            text-transform: none;
+        }
 
-        .page-footer { text-align: left; padding: 2rem; font-size: 0.75rem; color: #999999; border-top: 1px solid rgba(0,0,0,0.08); }
+        .page-footer { border-top: 1px solid var(--sisifo-border-light); }
 
         @media (max-width: 768px) {
             .tools-grid { grid-template-columns: 1fr; }
@@ -38,7 +97,7 @@
     <section class="hero">
         <div class="hero-content">
             <div class="hero-eyebrow">Visual Manipulation Tools</div>
-            <h1 class="hero-title">MEDUSA</h1>
+            <h1 class="hero-title">PERSEO</h1>
             <p class="hero-subtitle">
                 Nada nuevo, nada eliminado.
             </p>
@@ -62,6 +121,6 @@
         </div>
     </section>
 
-    <div class="page-footer">© 2026 MEDUSA</div>
+    <div class="page-footer">© 2026 PERSEO</div>
 </body>
 </html>
